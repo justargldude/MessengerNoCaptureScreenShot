@@ -5,7 +5,7 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
       
@@ -16,14 +16,15 @@ jobs:
           
       - name: Build Package
         run: |
-          # Sửa lỗi tên file nếu có (GitHub Linux phân biệt hoa thường)
+          # Sửa lỗi tên file (phòng hờ)
           if [ -f makefile ]; then mv makefile Makefile; fi
+          if [ -f makefile.mak ]; then mv makefile.mak Makefile; fi
           
           # Build
           make package FINALPACKAGE=1
           
       - name: Upload Deb
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: MessengerBypass_Deb
           path: packages/*.deb
