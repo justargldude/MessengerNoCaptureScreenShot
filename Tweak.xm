@@ -1,8 +1,8 @@
-// Tweak.xm - ScreenCaptureBypass v4.0 (Ultra Safe - Dynamic Hooking)
+// Tweak.xm - ScreenCaptureBypass v4.1 (Ultra Safe - Cast to id)
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 
-// ========== HOOK UISCREEN (LUÔN AN TOÀN - SYSTEM CLASS) ==========
+// ========== HOOK UISCREEN (LUÔN AN TOÀN) ==========
 %hook UIScreen
 - (BOOL)isCaptured {
     return NO; 
@@ -15,8 +15,9 @@
 %hook MSGQuicksnapScreenCaptureProtectedView
 - (void)didMoveToWindow {
     %orig;
-    [self setHidden:YES];
-    [self setAlpha:0];
+    // Cast to id để bypass forward declaration error
+    [(id)self setHidden:YES];
+    [(id)self setAlpha:0];
 }
 - (void)setHidden:(BOOL)hidden { %orig(YES); }
 - (void)setAlpha:(CGFloat)alpha { %orig(0); }
@@ -25,8 +26,8 @@
 %hook MSGQuicksnapScreenCaptureProtectionEducationView
 - (void)didMoveToWindow {
     %orig;
-    [self setHidden:YES];
-    [self setAlpha:0];
+    [(id)self setHidden:YES];
+    [(id)self setAlpha:0];
 }
 %end
 
@@ -67,22 +68,18 @@
 
 // ========== CONSTRUCTOR ==========
 %ctor {
-    // Init UIScreen hook ngay lập tức (system class - luôn tồn tại)
     %init(_ungrouped);
-    
-    // Init Notification hooks ngay (NSNotificationCenter luôn tồn tại)
     %init(NotificationHooks);
     
-    NSLog(@"[ScreenCaptureBypass] v4.0 - System hooks active!");
+    NSLog(@"[ScreenCaptureBypass] v4.1 - System hooks active!");
     
-    // Delay hook cho Messenger classes
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         Class targetClass = objc_getClass("MSGQuicksnapScreenCaptureProtectedView");
         if (targetClass) {
             %init(MessengerHooks);
             NSLog(@"[ScreenCaptureBypass] Messenger hooks activated!");
         } else {
-            NSLog(@"[ScreenCaptureBypass] Target class not found, skipping Messenger hooks.");
+            NSLog(@"[ScreenCaptureBypass] Target class not found.");
         }
     });
 }
