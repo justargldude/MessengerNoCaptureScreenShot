@@ -1,9 +1,10 @@
 Package: com.yourname.screencapturebypass
 Name: ScreenCaptureBypass
-Version: 2.0
+Version: 6.0
 Architecture: iphoneos-arm64
 Description: Bypass screenshot and screen recording detection in Messenger
 Maintainer: Thanh Tung Bui <buitung161@gmail.com>
 Author: Thanh Tung Bui
 Section: Tweaks
 Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 14.0)
+
