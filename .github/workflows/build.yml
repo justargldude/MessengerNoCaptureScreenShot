@@ -1,0 +1,29 @@
+name: Build Tweak
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      
+      - name: Install Theos
+        run: |
+          bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
+          echo "THEOS=~/theos" >> $GITHUB_ENV
+          
+      - name: Build Package
+        run: |
+          # Sửa lỗi tên file nếu có (GitHub Linux phân biệt hoa thường)
+          if [ -f makefile ]; then mv makefile Makefile; fi
+          
+          # Build
+          make package FINALPACKAGE=1
+          
+      - name: Upload Deb
+        uses: actions/upload-artifact@v3
+        with:
+          name: MessengerBypass_Deb
+          path: packages/*.deb
