@@ -24,6 +24,19 @@ jobs:
         run: |
           brew install ldid
           brew install dpkg
+          brew install dos2unix
+          
+      # ========== FIX LINE ENDINGS ==========
+      - name: Fix Line Endings (Windows to Unix)
+        run: |
+          # Convert control file
+          dos2unix control
+          # Convert Makefile just in case
+          dos2unix Makefile
+          # Convert any other text files if needed
+          find . -name "*.plist" -exec dos2unix {} \;
+          find . -name "*.xm" -exec dos2unix {} \;
+          echo "✅ Line endings converted successfully!"
           
       - name: Build Package
         run: |
