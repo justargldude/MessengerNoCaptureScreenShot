@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>isEnabled</key>
-    <true/>
-    <key>blockNotification</key>
-    <true/>
-</dict>
-</plist>
+Package: com.yourname.screencapturebypass
+Name: ScreenCaptureBypass
+Version: 2.0
+Architecture: iphoneos-arm64
+Description: Bypass screenshot and screen recording detection in Messenger
+Maintainer: Thanh Tung Bui <buitung161@gmail.com>
+Author: Thanh Tung Bui
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 14.0)
