@@ -1,50 +1,35 @@
-// Tweak.xm - ScreenCaptureBypass v4.1 (Ultra Safe - Cast to id)
+// Tweak.xm - ScreenCaptureBypass v5.0 (Minimal - Maximum Stability)
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 
-// ========== HOOK UISCREEN (LUÔN AN TOÀN) ==========
+// ========================================
+// CHỈ GIỮ LẠI 2 HOOK AN TOÀN NHẤT
+// 1. UIScreen.isCaptured - Đánh lừa toàn bộ App
+// 2. NSNotificationCenter - Chặn thông báo screenshot
+// ========================================
+
+// ========== HOOK 1: UIScreen (SYSTEM CLASS - 100% AN TOÀN) ==========
 %hook UIScreen
 - (BOOL)isCaptured {
+    // Đây là hook quan trọng nhất và an toàn nhất
+    // Khi return NO, App nghĩ không ai đang quay/chụp màn hình
+    // -> Protected View sẽ KHÔNG hiện lên
     return NO; 
 }
 %end
 
-// ========== DYNAMIC HOOKING (CHỐNG CRASH) ==========
-%group MessengerHooks
-
-%hook MSGQuicksnapScreenCaptureProtectedView
-- (void)didMoveToWindow {
-    %orig;
-    // Cast to id để bypass forward declaration error
-    [(id)self setHidden:YES];
-    [(id)self setAlpha:0];
-}
-- (void)setHidden:(BOOL)hidden { %orig(YES); }
-- (void)setAlpha:(CGFloat)alpha { %orig(0); }
-%end
-
-%hook MSGQuicksnapScreenCaptureProtectionEducationView
-- (void)didMoveToWindow {
-    %orig;
-    [(id)self setHidden:YES];
-    [(id)self setAlpha:0];
-}
-%end
-
-%end // Kết thúc group MessengerHooks
-
-// ========== NOTIFICATION HOOKS ==========
-%group NotificationHooks
-
+// ========== HOOK 2: NSNotificationCenter (SYSTEM CLASS - AN TOÀN) ==========
 %hook NSNotificationCenter
+
 - (void)addObserver:(id)observer 
            selector:(SEL)aSelector 
                name:(NSNotificationName)aName 
              object:(id)anObject {
+    // Chặn đăng ký lắng nghe screenshot
     if (aName != nil) {
         if ([aName isEqualToString:@"UIApplicationUserDidTakeScreenshotNotification"] ||
             [aName isEqualToString:@"UIScreenCapturedDidChangeNotification"]) {
-            return; 
+            return; // Không đăng ký -> người kia không biết bạn chụp
         }
     }
     %orig;
@@ -62,24 +47,11 @@
     }
     return %orig;
 }
-%end
 
-%end // Kết thúc group NotificationHooks
+%end
 
 // ========== CONSTRUCTOR ==========
 %ctor {
-    %init(_ungrouped);
-    %init(NotificationHooks);
-    
-    NSLog(@"[ScreenCaptureBypass] v4.1 - System hooks active!");
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        Class targetClass = objc_getClass("MSGQuicksnapScreenCaptureProtectedView");
-        if (targetClass) {
-            %init(MessengerHooks);
-            NSLog(@"[ScreenCaptureBypass] Messenger hooks activated!");
-        } else {
-            NSLog(@"[ScreenCaptureBypass] Target class not found.");
-        }
-    });
+    %init;
+    NSLog(@"[ScreenCaptureBypass] v5.0 Minimal - Active!");
 }
