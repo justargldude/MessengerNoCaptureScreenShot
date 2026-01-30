@@ -1,5 +1,13 @@
-// Tweak.xm - ScreenCaptureBypass v2.0 (Safe Edition)
+// Tweak.xm - ScreenCaptureBypass v2.0 (Fixed Forward Declaration)
 #import <UIKit/UIKit.h>
+
+// ========== FORWARD DECLARATIONS ==========
+// Khai báo interface để compiler biết các method
+@interface MSGQuicksnapScreenCaptureProtectedView : UIView
+@end
+
+@interface MSGQuicksnapScreenCaptureProtectionEducationView : UIView
+@end
 
 // ========== SETTINGS TOGGLE ==========
 #define PLIST_PATH @"/var/mobile/Library/Preferences/com.yourname.screencapturebypass.plist"
@@ -23,9 +31,9 @@ static BOOL shouldBlockNotification() {
 - (instancetype)init {
     self = %orig;
     if (self && isEnabled()) {
-        [self setHidden:YES];
-        [self setAlpha:0];
-        [self setUserInteractionEnabled:NO];
+        self.hidden = YES;
+        self.alpha = 0;
+        self.userInteractionEnabled = NO;
     }
     return self;
 }
@@ -33,9 +41,9 @@ static BOOL shouldBlockNotification() {
 - (instancetype)initWithFrame:(CGRect)frame {
     self = %orig;
     if (self && isEnabled()) {
-        [self setHidden:YES];
-        [self setAlpha:0];
-        [self setUserInteractionEnabled:NO];
+        self.hidden = YES;
+        self.alpha = 0;
+        self.userInteractionEnabled = NO;
     }
     return self;
 }
@@ -43,16 +51,16 @@ static BOOL shouldBlockNotification() {
 - (void)didMoveToWindow {
     %orig;
     if (isEnabled()) {
-        [self setHidden:YES];
-        [self setAlpha:0];
+        self.hidden = YES;
+        self.alpha = 0;
     }
 }
 
 - (void)layoutSubviews {
     %orig;
     if (isEnabled()) {
-        [self setHidden:YES];
-        [self setAlpha:0];
+        self.hidden = YES;
+        self.alpha = 0;
     }
 }
 
@@ -84,8 +92,8 @@ static BOOL shouldBlockNotification() {
 - (instancetype)init {
     self = %orig;
     if (self && isEnabled()) {
-        [self setHidden:YES];
-        [self setAlpha:0];
+        self.hidden = YES;
+        self.alpha = 0;
     }
     return self;
 }
@@ -93,7 +101,7 @@ static BOOL shouldBlockNotification() {
 - (void)didMoveToWindow {
     %orig;
     if (isEnabled()) {
-        [self setHidden:YES];
+        self.hidden = YES;
     }
 }
 
