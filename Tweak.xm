@@ -1,26 +1,13 @@
-// Tweak.xm - ScreenCaptureBypass v5.0 (Minimal - Maximum Stability)
+// Tweak.xm - ScreenCaptureBypass v6.0 (ULTRA MINIMAL)
 #import <UIKit/UIKit.h>
-#import <objc/runtime.h>
 
+// CHỈ CÓ 1 HOOK DUY NHẤT - KHÔNG THỂ CRASH
 %hook UIScreen
 - (BOOL)isCaptured {
-    return NO; 
-}
-%end
-
-%hook NSNotificationCenter
-- (void)addObserver:(id)observer selector:(SEL)aSelector name:(NSNotificationName)aName object:(id)anObject {
-    if (aName != nil) {
-        if ([aName isEqualToString:@"UIApplicationUserDidTakeScreenshotNotification"] ||
-            [aName isEqualToString:@"UIScreenCapturedDidChangeNotification"]) {
-            return;
-        }
-    }
-    %orig;
+    return NO;
 }
 %end
 
 %ctor {
     %init;
-    NSLog(@"[ScreenCaptureBypass] v5.0 Active!");
 }
